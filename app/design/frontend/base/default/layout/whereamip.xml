@@ -1,0 +1,20 @@
+<layout version="0.1.0">
+    <default>
+        <reference name="footer_links">
+            <action method="addLink" translate="label title" module="whereamip"><label>Change Country</label><url helper="whereamip/getUrl" /><title>Change Country</title></action>
+        </reference>
+    </default>
+    <whereamip_index_index>
+        <label>Choose Your Shipping Destination</label>
+        <reference name="head">
+            <action method="setTitle" translate="title" module="whereamip"><title>Choose Your Shipping Destination</title></action>
+        </reference>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+            <action method="setHeaderTitle" translate="title" module="whereamip"><title>Choose Your Shipping Destination</title></action>
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="changeCountry" template="whereamip/change_country.phtml"/>
+        </reference>
+    </whereamip_index_index>
+</layout>

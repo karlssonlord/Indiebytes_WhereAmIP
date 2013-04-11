@@ -1,0 +1,45 @@
+<?php
+    $_countries = Mage::helper('whereamip')->getActiveCountries();
+    $_currentCountryCode = Mage::getSingleton('core/session')->getCountryCode(); 
+    $_returnUrl = isset($_SERVER['HTTP_REFERER']) && parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == parse_url(Mage::getUrl(''), PHP_URL_HOST) ? parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH) : '';
+?>
+<div class="page-title">
+    <h1><?php echo $this->__('Change country') ?></h1>
+</div>
+<form action="." method="post">
+    <p><?php echo $this->__('Please select the country where your order will be shipped to. This will give you the correct pricing, delivery times and shipping costs for your destination.') ?></p>
+    <p>
+        <label for="whereamip"><?php echo $this->__('Delivery country') ?></label>
+        <select name="country" id="whereamip" onchange="checkIfSameStore(this.value);">
+            <?php foreach ($_countries as $countryCode => $store): ?>
+            <option value="<?php echo $countryCode; ?>"<?php echo $_currentCountryCode == $countryCode ? ' selected="selected"' : '' ?>><?php echo $store['country']; ?></option>
+            <?php endforeach; ?>
+        </select>
+        <input type="hidden" name="ref" value="<?php echo $_returnUrl; ?>">
+        <input type="submit" value="<?php echo $this->__('Confirm selection') ?>" name="submitcountry" />
+    </p>
+    <dl class="details">
+        <dt><?php echo $this->__('Order billed in') ?></dt>
+        <dd id="whereamip-currency"><?php echo Mage::app()->getStore()->getCurrentCurrencyCode() ?></dd>
+        <dt><?php echo $this->__('Order dispatched from') ?></dt>
+        <dd id="whereamip-origin"><?php echo Mage::getStoreConfig('shipping/origin/country_id') ?></dd>
+    </dl>
+    <div id="whereamip-message"></div>
+    <script>
+        var currentCountry = '<?php echo strtoupper($_currentCountryCode) ?>';
+        var activeCountries = <?php echo json_encode($_countries) ?>;
+        
+        function checkIfSameStore(countryCode) {
+            $('whereamip-currency').innerHTML = activeCountries[countryCode].currency;
+            $('whereamip-origin').innerHTML = activeCountries[countryCode].origin;
+
+            if (activeCountries[countryCode].code == activeCountries[currentCountry].code) {
+                $('whereamip-message').hide();
+                $('whereamip-message').innerHTML = '';
+            } else {
+                $('whereamip-message').innerHTML ='<?php echo $this->__('If you change your country and confirm the selection, any items currently in your cart will be lost and you may have to register a new account.') ?>';
+                $('whereamip-message').show();
+            }
+        }
+    </script>
+</form>

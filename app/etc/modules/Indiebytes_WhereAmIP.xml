@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+		<Indiebytes_WhereAmIP>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Unirgy_GeoIP />
+            </depends>
+		</Indiebytes_WhereAmIP>
+	</modules>
+</config>
