@@ -5,6 +5,10 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
     {
         if ($this->getRequest()->getPost('country')) {
             $countryCode = $this->getRequest()->getPost('country');
+        } else if (Mage::getSingleton('core/session')->getCountryCode()) {
+            $countryCode = Mage::getSingleton('core/session')->getCountryCode();
+        } else {
+            $countryCode = Mage::getStoreConfig('general/country/default');
         }
 
         $countryCode = strtoupper($countryCode);
