@@ -27,7 +27,9 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                 setcookie("store", $storeCode, time() + 60*60*24*30, "/");
 
                 if ($ip) {
-                    header("Location: " . reset(explode('?', $_SERVER["REQUEST_URI"])));
+                    $uri = explode('?', $_SERVER["REQUEST_URI"]);
+                    $requestUri = reset($uri);
+                    header("Location: " . $requestUri);
                     exit;
                 }
 
