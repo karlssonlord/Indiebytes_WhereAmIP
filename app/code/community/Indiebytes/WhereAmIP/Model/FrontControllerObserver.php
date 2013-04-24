@@ -9,14 +9,14 @@
 class Indiebytes_WhereAmIP_Model_FrontControllerObserver
 {
     function getCountryCode() {
-        $ip = isset($_GET['ip']) ? $_GET['ip'] : null;
+        $ip = isset($_GET['ip']) ? $_GET['ip'] : Mage::helper('core/http')->getRemoteAddr(false);
 
         $countries = Mage::helper('whereamip')->getActiveCountries();
 
-        if (!Mage::getSingleton('core/session')->getStoreCode() || $ip !== null) {
+        if (!Mage::getSingleton('core/session')->getStoreCode() && $ip !== null) {
             Mage::helper('ugeoip')->getGeoInstance('GeoIP');
             $geoIp = Mage::helper('ugeoip')->getGeoLocation(true, $ip);
-            $geoCountryCode = $geoIp->getData('countryCode');
+            $geoCountryCode = $geoIp->getData('countryCode') ? $geoIp->getData('countryCode') : Mage::getStoreConfig('general/country/default');;
 
             Mage::getSingleton('core/session')->setCountryCode($geoCountryCode);
 
@@ -25,16 +25,6 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                 Mage::getSingleton('core/session')->setStoreCode($storeCode);
 
                 setcookie("store", $storeCode, time() + 60*60*24*30, "/");
-
-                if ($ip) {
-                    $uri = explode('?', $_SERVER["REQUEST_URI"]);
-                    $requestUri = reset($uri);
-                    header("Location: " . $requestUri);
-                    exit;
-                }
-
-                header("Location: " . $_SERVER["REQUEST_URI"]);
-                exit;
             }
         } else {
             $geoCountryCode = Mage::getSingleton('core/session')->getCountryCode();
