@@ -14,7 +14,7 @@
             <action method="setHeaderTitle" translate="title" module="whereamip"><title>Choose Your Shipping Destination</title></action>
         </reference>
         <reference name="content">
-            <block type="core/template" name="changeCountry" template="whereamip/change_country.phtml"/>
+            <block type="whereamip/switch" name="changeCountry" template="whereamip/change_country.phtml"/>
         </reference>
     </whereamip_index_index>
 </layout>

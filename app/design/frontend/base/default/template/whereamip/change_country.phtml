@@ -22,7 +22,7 @@
         <dt><?php echo $this->__('Order billed in') ?></dt>
         <dd id="whereamip-currency"><?php echo Mage::app()->getStore()->getCurrentCurrencyCode() ?></dd>
         <dt><?php echo $this->__('Order dispatched from') ?></dt>
-        <dd id="whereamip-origin"><?php echo Mage::getStoreConfig('shipping/origin/country_id') ?></dd>
+        <dd id="whereamip-origin"><?php $countryCode = Mage::getStoreConfig('shipping/origin/country_id'); echo Mage::getModel('core/locale')->getCountryTranslation($countryCode); ?></dd>
     </dl>
     <div id="whereamip-message"></div>
     <script>

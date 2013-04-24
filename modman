@@ -1,4 +1,5 @@
 app/code/community/Indiebytes/*               app/code/community/Indiebytes/
 app/design/frontend/base/default/layout/*.xml app/design/frontend/base/default/layout/
 app/design/frontend/base/default/template/*   app/design/frontend/base/default/template/
+app/locale/sv_SE/*                            app/locale/sv_SE/
 app/etc/modules/*.xml                         app/etc/modules/

@@ -6,6 +6,11 @@
         </Indiebytes_WhereAmIP>
     </modules>
     <global>
+        <blocks>
+            <whereamip>
+                <class>Indiebytes_WhereAmIP_Block</class>
+            </whereamip>
+        </blocks>
         <helpers>
             <whereamip>
                 <class>Indiebytes_WhereAmIP_Helper</class>
@@ -40,5 +45,14 @@
                 </whereamip>
             </updates>
         </layout>
+        <translate>
+            <modules>
+                <whereamip>
+                    <files>
+                        <default>Indiebytes_WhereAmIP.csv</default>
+                    </files>
+                </whereamip>
+            </modules>
+        </translate>
     </frontend>
 </config>
