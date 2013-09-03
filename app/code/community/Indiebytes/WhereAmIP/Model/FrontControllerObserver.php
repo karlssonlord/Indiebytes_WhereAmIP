@@ -8,15 +8,15 @@
  */
 class Indiebytes_WhereAmIP_Model_FrontControllerObserver
 {
-    function getCountryCode() {
+    public function getCountryCode()
+    {
         $ip = isset($_GET['ip']) ? $_GET['ip'] : Mage::helper('core/http')->getRemoteAddr(false);
 
-        $countries = Mage::helper('whereamip')->getActiveCountries();
-
         if (!Mage::getSingleton('core/session')->getStoreCode() && $ip !== null) {
+            $countries = Mage::helper('whereamip')->getActiveCountries();
             Mage::helper('ugeoip')->getGeoInstance('GeoIP');
             $geoIp = Mage::helper('ugeoip')->getGeoLocation(true, $ip);
-            $geoCountryCode = $geoIp->getData('countryCode') ? $geoIp->getData('countryCode') : Mage::getStoreConfig('general/country/default');;
+            $geoCountryCode = $geoIp->getData('countryCode') ? $geoIp->getData('countryCode') : Mage::getStoreConfig('general/country/default');
 
             Mage::getSingleton('core/session')->setCountryCode($geoCountryCode);
 
@@ -28,7 +28,7 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
             }
         } else {
             $geoCountryCode = Mage::getSingleton('core/session')->getCountryCode();
-            $storeCode = Mage::getSingleton('core/session')->getStoreCode();
+            $storeCode      = Mage::getSingleton('core/session')->getStoreCode();
 
             setcookie("store", $storeCode, time() + 60*60*24*30, "/");
         }

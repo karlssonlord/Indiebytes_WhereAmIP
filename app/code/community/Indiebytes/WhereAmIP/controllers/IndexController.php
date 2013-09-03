@@ -5,7 +5,7 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
     {
         if ($this->getRequest()->getPost('country')) {
             $countryCode = $this->getRequest()->getPost('country');
-        } else if (Mage::getSingleton('core/session')->getCountryCode()) {
+        } elseif (Mage::getSingleton('core/session')->getCountryCode()) {
             $countryCode = Mage::getSingleton('core/session')->getCountryCode();
         } else {
             $countryCode = Mage::getStoreConfig('general/country/default');
@@ -23,10 +23,15 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
             setcookie("store", $storeCode, time() + 60*60*24*30, "/");
 
             if ($this->getRequest()->getPost('ref')) {
-                /**
-                 * @todo Improve this row, get the base URL for selected country
-                 */
-                header("Location: " . $this->getRequest()->getPost('ref'));
+                $store = Mage::app()->getStore($storeCode);
+
+                if ($store) {
+                    $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+                } else {
+                    $url = $this->getRequest()->getPost('ref');
+                }
+
+                header("Location: " . $url);
                 exit;
             }
         } else {
@@ -37,6 +42,6 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
 
         $this->loadLayout();
         $this->getLayout()->getBlock('changeCountry');
-        $this->renderLayout(); 
+        $this->renderLayout();
     }
 }
