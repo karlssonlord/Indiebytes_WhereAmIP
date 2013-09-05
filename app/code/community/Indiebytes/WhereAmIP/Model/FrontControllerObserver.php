@@ -79,6 +79,14 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                 $setCookieResult = setcookie("store", $storeCode, time() + 60*60*24*30, "/");
 
                 /**
+                 * If it's the intranet calling, don't do any JS redirect, just pass it along
+                 * 91.223.232.187 = SERVER_IP
+                 */
+                if ($_SERVER['REMOTE_ADDR'] == '91.223.232.187') {
+                    $setCookieResult = false;
+                }
+
+                /**
                  * If cookie was saved, redirect to same page
                  */
                 if ($setCookieResult) {
