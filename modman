@@ -3,3 +3,5 @@ app/design/frontend/base/default/layout/*.xml app/design/frontend/base/default/l
 app/design/frontend/base/default/template/*   app/design/frontend/base/default/template/
 app/locale/sv_SE/*                            app/locale/sv_SE/
 app/etc/modules/*.xml                         app/etc/modules/
+enable-cookies.html                           enable-cookies.html
+indexNdc.php                                  indexNdc.php
