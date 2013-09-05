@@ -8,6 +8,7 @@
  */
 class Indiebytes_WhereAmIP_Model_FrontControllerObserver
 {
+
     /**
      * getCountryCode
      *
@@ -24,6 +25,12 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
          * Fetch current IP
          */
         $ip = isset($_GET['ip']) ? $_GET['ip'] : Mage::helper('core/http')->getRemoteAddr(false);
+
+        /*
+        $ip = '192.30.252.128'; // Github
+        $ip = '2.136.0.0'; // Spanien
+        $ip = '37.16.96.0'; // Finland
+        */
 
         /**
          * Log the IP address found

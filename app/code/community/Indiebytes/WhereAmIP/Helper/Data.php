@@ -61,4 +61,13 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     function getUrl() {
         return Mage::getUrl('whereamip');
     }
+
+    /**
+     * Erik fixed this too
+     *
+     */
+    public function log()
+    {
+        return $this; // Robban?!
+    }
 }
