@@ -1,5 +1,8 @@
 <layout version="0.1.0">
     <default>
+        <reference name="head">
+            <block type="core/template" name="redirectUrl" template="whereamip/redirect.phtml" />
+        </reference>
         <reference name="footer_links">
             <action method="addLink" translate="label title" module="whereamip"><label>Change Country</label><url helper="whereamip/getUrl" /><title>Change Country</title></action>
         </reference>

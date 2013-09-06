@@ -1,0 +1,3 @@
+<?php if($url = Mage::helper('whereamip')->getRedirectUrl()) : ?>
+    <script>window.location = '<?php echo $url; ?>'</script>
+<?php endif; ?>
