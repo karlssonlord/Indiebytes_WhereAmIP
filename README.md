@@ -13,3 +13,5 @@
 ## Author
 
 * Andreas Karlsson
+* Robert Lord
+* Erik Eng
