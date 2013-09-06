@@ -57,7 +57,11 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
             /**
              * Fetch current request URI
              */
-            $requestUri = $_SERVER['REQUEST_URI'];
+            if (isset($_SERVER['REQUEST_URI'])) {
+                $requestUri = $_SERVER['REQUEST_URI'];
+            } else {
+                $requestUri = '/';
+            }
 
             /**
              * Remove store codes from request URI
