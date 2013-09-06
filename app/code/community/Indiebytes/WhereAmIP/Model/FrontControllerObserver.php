@@ -79,28 +79,35 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                 $setCookieResult = setcookie("store", $storeCode, time() + 60*60*24*30, "/");
 
                 /**
+                 * If it's the intranet calling, don't do any JS redirect, just pass it along
+                 * 91.223.232.187 = SERVER_IP
+                 */
+                if ($_SERVER['REMOTE_ADDR'] == '91.223.232.187') {
+                    $setCookieResult = false;
+                }
+
+                /**
                  * If cookie was saved, redirect to same page
                  */
-                if ($setCookieResult) {
+                if ($setCookieResult && 1 == 2) {
                     /**
                      * Redirect
                      */
                     $redirectUrl = Mage::helper('core/url')->getCurrentUrl();
                     ?>
                     <script type="text/javascript">
-                        function createCookie(name, value, days)
-                        {
+                        function createCookie(name, value, days) {
                             var expires;
                             if (days) {
                                 var date = new Date();
                                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
                                 expires = "; expires=" + date.toGMTString();
-                            } else expires = "";
+                            }
+                            else expires = "";
                             document.cookie = name + "=" + value + expires + "; path=/";
                         }
 
-                        function readCookie(name)
-                        {
+                        function readCookie(name) {
                             var nameEQ = name + "=";
                             var ca = document.cookie.split(';');
                             for (var i = 0; i < ca.length; i++) {
@@ -108,24 +115,20 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                                 while (c.charAt(0) == ' ') c = c.substring(1, c.length);
                                 if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
                             }
-
                             return null;
                         }
 
-                        function eraseCookie(name)
-                        {
+                        function eraseCookie(name) {
                             createCookie(name, "", -1);
                         }
 
-                        function areCookiesEnabled()
-                        {
+                        function areCookiesEnabled() {
                             var r = false;
                             createCookie("testing", "Hello", 1);
                             if (readCookie("testing") != null) {
                                 r = true;
                                 eraseCookie("testing");
                             }
-
                             return r;
                         }
                         if (areCookiesEnabled() == false) {
