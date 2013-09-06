@@ -55,9 +55,49 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             /**
+             * Fetch current request URI
+             */
+            $requestUri = $_SERVER['REQUEST_URI'];
+
+            /**
+             * Remove store codes from request URI
+             */
+            foreach (Mage::app()->getStores() as $_eachStoreId => $val)
+            {
+                /**
+                 * This item in loop
+                 */
+                $_storeCode = Mage::app()->getStore($_eachStoreId)->getCode();
+
+                if (strlen($requestUri) == (strlen('/' . $_storeCode))) {
+                    /**
+                     * Match /fi
+                     */
+                    return false;
+
+                    /**
+                     * Not in use right now
+                     */
+                    $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
+
+                } else if (substr($requestUri, 0, (strlen('/' . $_storeCode))) == '/' . $_storeCode) {
+                    /**
+                     * Match /fi/
+                     */
+                    return false;
+
+                    /**
+                     * Not in use right now
+                     */
+                    $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
+                }
+
+            }
+
+            /**
              * Set the redirect URL
              */
-            $return = $storeUrl . $_SERVER['REQUEST_URI'];
+            $return = $storeUrl . $requestUri;
         }
 
         return $return;
