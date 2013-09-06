@@ -89,7 +89,7 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                 /**
                  * If cookie was saved, redirect to same page
                  */
-                if ($setCookieResult) {
+                if ($setCookieResult && 1 == 2) {
                     /**
                      * Redirect
                      */
