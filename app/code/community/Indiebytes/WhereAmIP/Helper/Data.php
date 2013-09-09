@@ -75,23 +75,13 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
 
                 if (strlen($requestUri) == (strlen('/' . $_storeCode))) {
                     /**
-                     * Match /fi
-                     */
-                    return false;
-
-                    /**
-                     * Not in use right now
+                     * Change URL path
                      */
                     $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
 
                 } else if (substr($requestUri, 0, (strlen('/' . $_storeCode))) == '/' . $_storeCode) {
                     /**
-                     * Match /fi/
-                     */
-                    return false;
-
-                    /**
-                     * Not in use right now
+                     * Change URL path
                      */
                     $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
                 }
