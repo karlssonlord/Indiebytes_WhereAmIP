@@ -45,7 +45,15 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
             /**
              * getGeoLocation
              */
-            $geoIp = Mage::helper('ugeoip')->getGeoLocation(true, $customerIp);
+            if (filter_var($customerIp, FILTER_VALIDATE_IP)) {
+                try {
+                    $geoIp = Mage::helper('ugeoip')->getGeoLocation(true, $customerIp);
+                } catch (Except $e) {
+                    $geoIp = new Varien_Object();
+                }
+            } else {
+                $geoIp = new Varien_Object();
+            }
 
             /**
              * Load the country code and save it to session
