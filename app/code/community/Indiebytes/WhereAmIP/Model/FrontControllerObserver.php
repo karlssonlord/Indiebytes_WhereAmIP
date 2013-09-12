@@ -17,6 +17,15 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
     public function getCountryCode()
     {
         /**
+         * If called from command line, don't use these cookies
+         */
+        if (function_exists('php_sapi_name')) {
+            if (php_sapi_name() == 'cli') {
+                return;
+            }
+        }
+
+        /**
          * Get current IP
          *
          * You can easily pass a GET-variable containing an IP address to easier
