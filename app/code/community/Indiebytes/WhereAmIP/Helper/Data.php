@@ -164,4 +164,16 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return $this; // Robban?!
     }
+
+    /**
+     * Get current country name
+     *
+     * @author Erik Eng <erik@karlssonlord.com>
+     *
+     */
+    public function getCurrentCountryName()
+    {
+        $countryCode = Mage::getSingleton('core/session')->getCountryCode();
+        return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
+    }
 }
