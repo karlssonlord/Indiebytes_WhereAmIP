@@ -227,7 +227,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Get current country name
+     * /dev/null
      *
      * @todo Remove
      *
