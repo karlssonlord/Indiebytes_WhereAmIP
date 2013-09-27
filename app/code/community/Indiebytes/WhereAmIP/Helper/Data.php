@@ -1,4 +1,46 @@
 <?php
+/**
+ * Where Am IP
+ * Copyright (C) 2013 Indiebytes
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @category   Indiebytes
+ * @package    Indiebytes_WhereAmIP
+ * @subpackage Indiebytes_WhereAmIP_Helper
+ * @author     Robert Lord <robert@karlssonlord.com>
+ * @author     Andreas Karlsson <andreas@karlssonlord.com>
+ * @author     Erik Eng <erik@karlssonlord.com>
+ * @copyright  2013 Indiebytes
+ * @license    LGPL v2.1 http://choosealicense.com/licenses/lgpl-v2.1/
+ * @link       https://github.com/indiebytes/Indiebytes_WhereAmIP
+ */
+
+/**
+ * General data helper
+ *
+ * @category   Indiebytes
+ * @package    Indiebytes_WhereAmIP
+ * @subpackage Indiebytes_WhereAmIP_Helper
+ * @author     Robert Lord <robert@karlssonlord.com>
+ * @author     Andreas Karlsson <andreas@karlssonlord.com>
+ * @author     Erik Eng <erik@karlssonlord.com>
+ * @copyright  2013 Indiebytes
+ * @license    LGPL v2.1 http://choosealicense.com/licenses/lgpl-v2.1/
+ * @link       https://github.com/indiebytes/Indiebytes_WhereAmIP
+ */
 class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
 {
     private $_selectableCountries;
@@ -6,31 +48,20 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Get URL where we should redirect
      *
-     * @author Robert Lord <robert@karlssonlord.com>
-     *
      * @return string|boolean
      */
     public function getRedirectUrl()
     {
-        /**
-         * Setup the default return result
-         */
-        $return = FALSE;
+        $storeCode  = Mage::getSingleton('core/session')->getStoreCode();
+        $storeUrl   = Mage::getModel('core/store')->load($storeCode)->getUrl();
+        $storeId    = Mage::getModel('core/store')->load($storeCode)->getId();
 
-        /**
-         * Fetch current store code
-         */
-        $storeCode = Mage::getSingleton('core/session')->getStoreCode();
-
-        /**
-         * Fetch current URL
-         */
         $currentUrl = Mage::helper('core/url')->getCurrentUrl();
+        $path       = basename($currentUrl);
 
-        /**
-         * Fetch URL for store code
-         */
-        $storeUrl = Mage::getModel('core/store')->load($storeCode)->getUrl();
+        $return           = false;
+        $redirectFromPath = null;
+        $redirectToPath   = null;
 
         /**
          * Make sure the URL's has trailing / when comparing
@@ -66,12 +97,37 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
             /**
              * Remove store codes from request URI
              */
-            foreach (Mage::app()->getStores() as $_eachStoreId => $val)
-            {
+            foreach (Mage::app()->getStores() as $_eachStoreId => $val) {
                 /**
                  * This item in loop
                  */
                 $_storeCode = Mage::app()->getStore($_eachStoreId)->getCode();
+
+                /**
+                 * To avoid 404 for products with localized slugs we should try
+                 * to put a little more effort in the redirect by looking up
+                 * the product among the URL rewrites and compare URL paths
+                 * between stores for the product.
+                 *
+                 * This part could probably be made more efficient with more
+                 * time spent on it.
+                 *
+                 * @author Andreas Karlsson <andreas@karlssonlord.com>
+                 */
+                $rewrite = Mage::getModel('core/url_rewrite')
+                    ->setStoreId($_eachStoreId)
+                    ->loadByRequestPath($path);
+
+                $productId = $rewrite->getProductId();
+
+                if ($productId) {
+                    try {
+                        $redirectToPath   = Mage::getModel('catalog/product')->setStoreId($storeId)->load($productId)->getUrlPath();
+                        $redirectFromPath = Mage::getModel('catalog/product')->setStoreId($_eachStoreId)->load($productId)->getUrlPath();
+                    } catch(Exception $e) {
+                        Mage::logException($e);
+                    }
+                }
 
                 if (strlen($requestUri) == (strlen('/' . $_storeCode))) {
                     /**
@@ -85,7 +141,10 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                      */
                     $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
                 }
+            }
 
+            if ($redirectFromPath != $redirectToPath) {
+                $requestUri = str_replace($redirectFromPath, $redirectToPath, $requestUri);
             }
 
             /**
@@ -97,6 +156,11 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         return $return;
     }
 
+    /**
+     * Get active countries
+     *
+     * @return array
+     */
     public function getActiveCountries()
     {
         if ( $this->_selectableCountries ) {
@@ -152,16 +216,36 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         return $return;
     }
 
-    function getUrl() {
+    /**
+     * Get URL
+     *
+     * @return string
+     */
+    function getUrl()
+    {
         return Mage::getUrl('whereamip');
     }
 
     /**
-     * Erik fixed this too
+     * Get current country name
      *
+     * @todo Remove
+     *
+     * @return Indiebytes_WhereAmIP_Helper_Data
      */
     public function log()
     {
-        return $this; // Robban?!
+        return $this;
+    }
+
+    /**
+     * Get current country name
+     *
+     * @return string
+     */
+    public function getCurrentCountryName()
+    {
+        $countryCode = Mage::getSingleton('core/session')->getCountryCode();
+        return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
     }
 }
