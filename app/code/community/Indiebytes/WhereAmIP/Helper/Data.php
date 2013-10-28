@@ -129,13 +129,13 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                     }
                 }
 
-                if (strlen($requestUri) == (strlen('/' . $_storeCode))) {
+                if (strlen($requestUri) == (strlen('/' . $_storeCode . '/'))) {
                     /**
                      * Change URL path
                      */
                     $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
 
-                } else if (substr($requestUri, 0, (strlen('/' . $_storeCode))) == '/' . $_storeCode) {
+                } else if (substr($requestUri, 0, (strlen('/' . $_storeCode . '/'))) == '/' . $_storeCode . '/') {
                     /**
                      * Change URL path
                      */
@@ -152,7 +152,6 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
              */
             $return = $storeUrl . $requestUri;
         }
-
         return $return;
     }
 
