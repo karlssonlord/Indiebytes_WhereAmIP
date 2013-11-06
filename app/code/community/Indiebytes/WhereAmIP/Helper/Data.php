@@ -53,7 +53,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     public function getRedirectUrl()
     {
         $storeCode  = Mage::getSingleton('core/session')->getStoreCode();
-        $storeUrl   = Mage::getModel('core/store')->load($storeCode)->getUrl();
+        $storeUrl   = Mage::getModel('core/store')->load($storeCode)->getBaseUrl();
         $storeId    = Mage::getModel('core/store')->load($storeCode)->getId();
 
         $currentUrl = Mage::helper('core/url')->getCurrentUrl();
