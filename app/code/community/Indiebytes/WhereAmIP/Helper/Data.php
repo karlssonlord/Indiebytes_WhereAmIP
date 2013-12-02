@@ -118,12 +118,26 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                     ->setStoreId($_eachStoreId)
                     ->loadByRequestPath($path);
 
-                $productId = $rewrite->getProductId();
+                $productId  = $rewrite->getProductId();
+                $categoryId = $rewrite->getCategoryId();
 
                 if ($productId) {
                     try {
-                        $redirectToPath   = Mage::getModel('catalog/product')->setStoreId($storeId)->load($productId)->getUrlPath();
-                        $redirectFromPath = Mage::getModel('catalog/product')->setStoreId($_eachStoreId)->load($productId)->getUrlPath();
+                        $product = Mage::getModel('catalog/product');
+                        $redirectToPath   = $product->setStoreId($storeId)
+                            ->load($productId)->getUrlPath();
+                        $redirectFromPath = $product->setStoreId($_eachStoreId)
+                            ->load($productId)->getUrlPath();
+                    } catch(Exception $e) {
+                        Mage::logException($e);
+                    }
+                } else if ($categoryId) {
+                    try {
+                        $category         = Mage::getModel('catalog/category');
+                        $redirectToPath   = $category->setStoreId($storeId)
+                            ->load($categoryId)->getUrlPath();
+                        $redirectFromPath = $category->setStoreId($_eachStoreId)
+                            ->load($categoryId)->getUrlPath();
                     } catch(Exception $e) {
                         Mage::logException($e);
                     }
