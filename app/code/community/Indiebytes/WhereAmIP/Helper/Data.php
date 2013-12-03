@@ -60,8 +60,6 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         $path       = basename($currentUrl);
 
         $return           = false;
-        $redirectFromPath = null;
-        $redirectToPath   = null;
 
         /**
          * Make sure the URL's has trailing / when comparing
@@ -102,44 +100,33 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                  * This item in loop
                  */
                 $_storeCode = Mage::app()->getStore($_eachStoreId)->getCode();
+                $_storeUrl  = Mage::getModel('core/store')->load($storeCode)->getBaseUrl();
+
+                $_path       = substr($currentUrl, strlen($_storeUrl), strrpos($currentUrl, $path) + strlen($path));
 
                 /**
-                 * To avoid 404 for products with localized slugs we should try
-                 * to put a little more effort in the redirect by looking up
-                 * the product among the URL rewrites and compare URL paths
-                 * between stores for the product.
-                 *
-                 * This part could probably be made more efficient with more
-                 * time spent on it.
-                 *
-                 * @author Andreas Karlsson <andreas@karlssonlord.com>
+                 * Remove trailing slashes
                  */
-                $rewrite = Mage::getModel('core/url_rewrite')
-                    ->setStoreId($_eachStoreId)
-                    ->loadByRequestPath($path);
+                if (substr($_path, -1) == '/') {
+                    $_path = substr($_path, 0, (strlen($_path) - 1));
+                }
 
-                $productId  = $rewrite->getProductId();
-                $categoryId = $rewrite->getCategoryId();
+                if ($_path) {
+                    $rewriteFrom = Mage::getModel('core/url_rewrite')
+                        ->setStoreId($_eachStoreId)
+                        ->loadByRequestPath($_path);
 
-                if ($productId) {
-                    try {
-                        $product = Mage::getModel('catalog/product');
-                        $redirectToPath   = $product->setStoreId($storeId)
-                            ->load($productId)->getUrlPath();
-                        $redirectFromPath = $product->setStoreId($_eachStoreId)
-                            ->load($productId)->getUrlPath();
-                    } catch(Exception $e) {
-                        Mage::logException($e);
-                    }
-                } else if ($categoryId) {
-                    try {
-                        $category         = Mage::getModel('catalog/category');
-                        $redirectToPath   = $category->setStoreId($storeId)
-                            ->load($categoryId)->getUrlPath();
-                        $redirectFromPath = $category->setStoreId($_eachStoreId)
-                            ->load($categoryId)->getUrlPath();
-                    } catch(Exception $e) {
-                        Mage::logException($e);
+                    $rewriteTo = Mage::getModel('core/url_rewrite')
+                        ->setStoreId($storeId)
+                        ->loadByIdPath($rewriteFrom->getIdPath());
+
+                    if ($rewriteFrom->getRequestPath() && $rewriteTo->getRequestPath()) {
+                        if (substr($storeUrl, -1) != '/') {
+                            $storeUrl .= '/';
+                        }
+                        $url = $storeUrl . $rewriteTo->getRequestPath();
+
+                        return $url;
                     }
                 }
 
@@ -155,10 +142,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                      */
                     $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
                 }
-            }
 
-            if ($redirectFromPath != $redirectToPath) {
-                $requestUri = str_replace($redirectFromPath, $redirectToPath, $requestUri);
             }
 
             /**
