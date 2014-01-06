@@ -102,7 +102,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                 $_storeCode = Mage::app()->getStore($_eachStoreId)->getCode();
                 $_storeUrl  = Mage::getModel('core/store')->load($storeCode)->getBaseUrl();
 
-                $_path       = substr($currentUrl, strlen($_storeUrl), strrpos($currentUrl, $path) + strlen($path));
+                $_path       = substr($currentUrl, strlen($storeUrl), strrpos($currentUrl, $path) + strlen($path));
 
                 /**
                  * Remove trailing slashes
@@ -114,7 +114,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                 if ($_path) {
                     $rewriteFrom = Mage::getModel('core/url_rewrite')
                         ->setStoreId($_eachStoreId)
-                        ->loadByRequestPath($_path);
+                        ->loadByRequestPath($path);
 
                     $rewriteTo = Mage::getModel('core/url_rewrite')
                         ->setStoreId($storeId)
