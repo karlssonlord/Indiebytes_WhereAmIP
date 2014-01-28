@@ -59,7 +59,14 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         $currentUrl = Mage::helper('core/url')->getCurrentUrl();
         $path       = basename($currentUrl);
 
-        $return           = false;
+        $return     = false;
+
+        /**
+         * Make sure we got a store code
+         */
+        if(is_null($storeCode)) {
+            return $return;
+        }
 
         /**
          * Make sure the URL's has trailing / when comparing
