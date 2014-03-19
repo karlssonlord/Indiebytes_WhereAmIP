@@ -264,7 +264,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         $countryCode = Mage::getSingleton('core/session')->getCountryCode();
         if (!isset($activeCountries[$countryCode])) {
             $countryCode = Mage::getStoreConfig('general/country/default');
-            return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
         }
+        return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
     }
 }
