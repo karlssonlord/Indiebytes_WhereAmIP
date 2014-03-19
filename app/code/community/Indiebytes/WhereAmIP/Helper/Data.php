@@ -249,12 +249,22 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getCurrentCountryName()
     {
+        $countryCode = Mage::getSingleton('core/session')->getCountryCode();
+        return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
+    }
+    /**
+     * Get current country name with fallback if country isn't active
+     *
+     * @return string
+     */
+    public function getCurrentCountryNameWithFallback()
+    {
 
         $activeCountries = $this->getActiveCountries();
         $countryCode = Mage::getSingleton('core/session')->getCountryCode();
         if (!isset($activeCountries[$countryCode])) {
             $countryCode = Mage::getStoreConfig('general/country/default');
+            return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
         }
-        return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
     }
 }
