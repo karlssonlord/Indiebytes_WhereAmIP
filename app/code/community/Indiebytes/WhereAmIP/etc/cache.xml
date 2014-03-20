@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <placeholders>
+        <whereamip>
+            <block>whereamip/link</block>
+            <name>whereamip_link</name>
+            <placeholder>CACHE_TEST</placeholder>
+            <container>Indiebytes_WhereAmIP_Model_Cache</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </whereamip>
+    </placeholders>
+</config>
