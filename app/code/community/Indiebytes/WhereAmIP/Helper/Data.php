@@ -53,111 +53,100 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     public function getRedirectUrl()
     {
         $storeCode  = Mage::getSingleton('core/session')->getStoreCode();
-        $storeUrl   = Mage::getModel('core/store')->load($storeCode)->getBaseUrl();
-        $storeId    = Mage::getModel('core/store')->load($storeCode)->getId();
-
-        $currentUrl = Mage::helper('core/url')->getCurrentUrl();
-        $path       = basename($currentUrl);
-
-        $return     = false;
 
         /**
-         * Make sure we got a store code
+         * Make sure we have a store code available
+         * for the visitor
          */
-        if(is_null($storeCode)) {
+        if (is_null($storeCode)) {
             return $return;
         }
 
         /**
-         * Make sure the URL's has trailing / when comparing
+         * Fetch current request URI
          */
-        if (substr($storeUrl, -1) !== '/') {
-            $storeUrl .= '/';
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $requestUri = $_SERVER['REQUEST_URI'];
+        } else {
+            $requestUri = '/';
         }
 
-        if (substr($currentUrl, -1) !== '/') {
-            $currentUrl .= '/';
-        }
+        $store      = Mage::getModel('core/store')->load($storeCode);
+        $storeId    = $store->getId();
+        $storeUrl   = $this->appendSlash($store->getBaseUrl());
+        $currentUrl = $this->appendSlash(Mage::helper('core/url')->getCurrentUrl());
+        $path       = basename($currentUrl);
 
         /**
-         * Compare the URLs
+         * Compare the request URL with the store URL to see if the request belongs to
+         * the current store scope
          */
-        if (substr($currentUrl, 0, (strlen($storeUrl))) !== $storeUrl) {
-            /**
-             * Remove trailing slashes
-             */
-            if (substr($storeUrl, -1) == '/') {
-                $storeUrl = substr($storeUrl, 0, (strlen($storeUrl) - 1));
-            }
+        if (substr($currentUrl, 0, strlen($storeUrl)) !== $storeUrl) {
+
+            $storeUrl = $this->stripSlash($storeUrl);
 
             /**
-             * Fetch current request URI
-             */
-            if (isset($_SERVER['REQUEST_URI'])) {
-                $requestUri = $_SERVER['REQUEST_URI'];
-            } else {
-                $requestUri = '/';
-            }
-
-            /**
-             * Remove store codes from request URI
+             * Iterate all stores
              */
             foreach (Mage::app()->getStores() as $_eachStoreId => $val) {
-                /**
-                 * This item in loop
-                 */
                 $_storeCode = Mage::app()->getStore($_eachStoreId)->getCode();
                 $_storeUrl  = Mage::getModel('core/store')->load($storeCode)->getBaseUrl();
-
-                $_path       = substr($currentUrl, strlen($storeUrl), strrpos($currentUrl, $path) + strlen($path));
+                $_path      = $this->stripSlash(
+                    substr(
+                        $currentUrl,
+                        strlen($storeUrl),
+                        strrpos($currentUrl, $path) + strlen($path)
+                    )
+                );
 
                 /**
-                 * Remove trailing slashes
+                 * Look at the URL Rewrites to see if there is a redirect available
+                 * for the request. This is really nice to have if you work with
+                 * localized slugs in your catalog.
                  */
-                if (substr($_path, -1) == '/') {
-                    $_path = substr($_path, 0, (strlen($_path) - 1));
-                }
-
                 if ($_path) {
                     $rewriteFrom = Mage::getModel('core/url_rewrite')
                         ->setStoreId($_eachStoreId)
-                        ->loadByRequestPath($path);
+                        ->loadByRequestPath($_path);
 
                     $rewriteTo = Mage::getModel('core/url_rewrite')
                         ->setStoreId($storeId)
                         ->loadByIdPath($rewriteFrom->getIdPath());
 
                     if ($rewriteFrom->getRequestPath() && $rewriteTo->getRequestPath()) {
-                        if (substr($storeUrl, -1) != '/') {
-                            $storeUrl .= '/';
-                        }
-                        $url = $storeUrl . $rewriteTo->getRequestPath();
+                        $url = $this->appendSlash($storeUrl) . $rewriteTo->getRequestPath();
 
                         return $url;
                     }
                 }
 
-                if (strlen($requestUri) == (strlen('/' . $_storeCode . '/'))) {
-                    /**
-                     * Change URL path
-                     */
+                /** 
+                 * /storecode/ or /storcode
+                 */
+                if (str_replace('/', '', $requestUri) == $_storeCode) {
+                    $requestUri = '/';
+
+                    return $storeUrl . $requestUri;
+
+                /**
+                 * /storecode/slug or /storcode/slug/
+                 */
+                } else if (substr($requestUri, 0, strlen('/' . $_storeCode . '/')) == '/' . $_storeCode . '/') {
                     $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
 
-                } else if (substr($requestUri, 0, (strlen('/' . $_storeCode . '/'))) == '/' . $_storeCode . '/') {
-                    /**
-                     * Change URL path
-                     */
-                    $requestUri = substr($requestUri, strlen('/' . $_storeCode), strlen($requestUri));
+                    return $storeUrl . $requestUri;
                 }
-
             }
-
-            /**
-             * Set the redirect URL
-             */
-            $return = $storeUrl . $requestUri;
         }
-        return $return;
+
+        /**
+         * Fallbacks if no store code was found in the request
+         */
+        if (substr($requestUri, 0, strlen('/' . $storeCode . '/')) == '/' . $storeCode . '/') {
+            return false;
+        } else {
+            return $storeUrl . $requestUri;
+        }
     }
 
     /**
@@ -279,5 +268,33 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         $countryCode = $this->getCurrentCountryCodeWithFallback();
 
         return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
+    }
+
+    /**
+     * Append slash
+     *
+     * @return string
+     */
+    public function appendSlash($string)
+    {
+        if (substr($string, -1) !== '/') {
+            $string .= '/';
+        }
+
+        return $string;
+    }
+
+    /**
+     * Strip slash
+     *
+     * @return string
+     */
+    public function stripSlash($string)
+    {
+        if (substr($string, -1) === '/') {
+            $string = substr($string, 0, (strlen($string) - 1));
+        }
+
+        return $string;
     }
 }
