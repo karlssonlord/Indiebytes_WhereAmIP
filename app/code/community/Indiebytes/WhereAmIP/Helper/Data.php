@@ -182,7 +182,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                                 'country' => $countryModel->loadByCode($country)->getName(),
                                 'code' => $store->getCode(),
                                 'currency' => $store->getCurrentCurrencyCode(),
-                                'origin' => $store->getConfig('shipping/origin/country_id')
+                                'origin' => $countryModel->loadByCode($store->getConfig('shipping/origin/country_id'))->getName()
                             );
                             // Add to the sort array
                             $returnSort[$return[$country]['country']][] = $country;
