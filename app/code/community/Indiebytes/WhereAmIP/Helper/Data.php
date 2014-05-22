@@ -120,7 +120,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                     }
                 }
 
-                /** 
+                /**
                  * /storecode/ or /storcode
                  */
                 if (str_replace('/', '', $requestUri) == $_storeCode) {
@@ -206,7 +206,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
 
         $this->_selectableCountries = $result;
 
-        return $return;
+        return $result;
     }
 
     /**
