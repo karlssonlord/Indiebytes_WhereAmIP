@@ -142,7 +142,8 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         /**
          * Fallbacks if no store code was found in the request
          */
-        if (substr($requestUri, 0, strlen('/' . $storeCode . '/')) == '/' . $storeCode . '/') {
+        if (substr($requestUri, 0, strlen('/' . $storeCode . '/')) == '/' . $storeCode . '/' ||
+            substr($requestUri, 0, strlen('/' . $storeCode)) == '/' . $storeCode) {
             return false;
         } else {
             return $storeUrl . $requestUri;
