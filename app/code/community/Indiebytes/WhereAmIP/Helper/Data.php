@@ -185,19 +185,23 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                     $countryList = Mage::getStoreConfig('general/country/allow', $store->getId());
                     // Explode the values into an array
                     $countryList = explode(',', $countryList);
+
                     // Add them to our array
                     foreach ( $countryList as $country ) {
-                        if ( !isset($return[$country]) ) {
-                            $return[$country] = array(
-                                'store_id' => $store->getId(),
-                                'country' => $countryModel->loadByCode($country)->getName(),
-                                'code' => $store->getCode(),
-                                'currency' => $store->getCurrentCurrencyCode(),
-                                'origin' => $store->getConfig('shipping/origin/country_id')
-                            );
-                            // Add to the sort array
-                            $returnSort[$return[$country]['country']][] = $country;
-                        }
+                        if ( !$country ) continue;
+                        if ( isset($return[$country]) ) continue;
+
+                        $return[$country] = array(
+                            'store_id' => $store->getId(),
+                            'country' => $countryModel->loadByCode($country)->getName(),
+                            'code' => $store->getCode(),
+                            'currency' => $store->getCurrentCurrencyCode(),
+                            'origin' => $store->getConfig('shipping/origin/country_id')
+                        );
+
+                        // Add to the sort array
+                        $returnSort[$return[$country]['country']][] = $country;
+
                     }
                 }
             }
