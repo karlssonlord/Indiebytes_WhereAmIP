@@ -52,6 +52,13 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getRedirectUrl()
     {
+        /**
+         * Never redirect from change-country view
+         */
+        if(Mage::app()->getRequest()->getPathInfo() === '/change-country/') {
+            return;
+        }
+
         $storeCode  = Mage::getSingleton('core/session')->getStoreCode();
 
         /**
@@ -239,8 +246,11 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getCurrentCountryName()
     {
+        $locale    = new Zend_Locale('en_US');
+        $countries = $locale->getTranslationList('Territory', $locale->getLanguage(), 2);
+
         $countryCode = Mage::getSingleton('core/session')->getCountryCode();
-        return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
+        return $countries[$countryCode];
     }
 
     /**

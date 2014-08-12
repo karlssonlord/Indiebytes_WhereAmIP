@@ -1,0 +1,14 @@
+<?php
+/**
+ * Go to Store Prompt
+ *
+ */
+
+$_helper = Mage::helper('whereamip');
+?>
+
+<?php if($url = $_helper->getRedirectUrl()) : ?>
+    <?php echo $this->__('Do you want to shop from %s?', $_helper->getCurrentCountryName()); ?>
+    <a href="<?php echo $url; ?>"><?php echo $this->__('Visit Store'); ?></a>
+    <a href="<?php echo $_helper->getUrl(); ?>"><?php echo $this->__('Change Country'); ?></a>
+<?php endif; ?>
