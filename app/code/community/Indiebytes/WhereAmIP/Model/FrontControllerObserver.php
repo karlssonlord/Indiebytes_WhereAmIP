@@ -40,7 +40,7 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
          * have received an IP address, then we should try to set the store
          * code based on active countries.
          **/
-        if (!Mage::getSingleton('core/session')->getStoreCode() && $customerIp !== null) {
+        if (!isset($_COOKIE['store']) && !Mage::getSingleton('core/session')->getStoreCode() && $customerIp !== null) {
             /**
              * Get active countries
              **/
@@ -74,13 +74,13 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
             if (array_key_exists($geoCountryCode, $countries)) {
                 $storeCode = $countries[$geoCountryCode]['code'];
                 Mage::getSingleton('core/session')->setStoreCode($storeCode);
-                setcookie("store", $storeCode, time() + 60*60*24*30, "/");
+                setcookie("wstore", $storeCode, time() + 60*60*24*30, "/");
             }
         } else {
             $geoCountryCode = Mage::getSingleton('core/session')->getCountryCode();
             $storeCode      = Mage::getSingleton('core/session')->getStoreCode();
 
-            setcookie("store", $storeCode, time() + 60*60*24*30, "/");
+            setcookie("wstore", $storeCode, time() + 60*60*24*30, "/");
         }
     }
 }

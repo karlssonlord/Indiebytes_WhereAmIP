@@ -15,12 +15,8 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
 
         $countries = Mage::helper('whereamip')->getActiveCountries();
 
-        // Make sure the request is set in the array
         if (array_key_exists($countryCode, $countries)) {
             $storeCode = $countries[$countryCode]['code'];
-            Mage::getSingleton('core/session')->setCountryCode($countryCode);
-            Mage::getSingleton('core/session')->setStoreCode($storeCode);
-            setcookie("store", $storeCode, time() + 60*60*24*30, "/");
 
             if ($this->getRequest()->getPost('ref')) {
                 $store = Mage::app()->getStore($storeCode);
@@ -29,6 +25,12 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
                     $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
                 } else {
                     $url = $this->getRequest()->getPost('ref');
+                }
+
+                if (strpos($url, "?") !== false) {
+                    $url .= "&store=" . $storeCode . "&country=". $countryCode;
+                } else {
+                    $url .= "?store=" . $storeCode . "&country=".$countryCode;
                 }
 
                 header("Location: " . $url);
