@@ -16,12 +16,15 @@
                 <class>Indiebytes_WhereAmIP_Helper</class>
             </whereamip>
         </helpers>
+        <models>
+            <whereamip>Indiebytes_WhereAmIP_Model</whereamip>
+        </models>
         <events>
             <controller_front_init_before>
                 <observers>
                     <indiebytes_whereamip_frontcontrollerobserver>
                         <type>singleton</type>
-                        <class>Indiebytes_WhereAmIP_Model_FrontControllerObserver</class>
+                        <class>whereamip/frontControllerObserver</class>
                         <method>getCountryCode</method>
                     </indiebytes_whereamip_frontcontrollerobserver>
                 </observers>
