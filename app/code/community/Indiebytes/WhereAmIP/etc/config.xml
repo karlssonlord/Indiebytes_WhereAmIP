@@ -17,7 +17,9 @@
             </whereamip>
         </helpers>
         <models>
-            <whereamip>Indiebytes_WhereAmIP_Model</whereamip>
+            <whereamip>
+                <class>Indiebytes_WhereAmIP_Model</class>
+            </whereamip>
         </models>
         <events>
             <controller_front_init_before>
