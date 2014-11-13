@@ -44,4 +44,21 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
         $this->getLayout()->getBlock('changeCountry');
         $this->renderLayout();
     }
+
+    public function pixelAction()
+    {
+        $countryCode = $this->getRequest()->getParam('code');
+        $countryCode = strtoupper($countryCode);
+        $countries   = Mage::helper('whereamip')->getActiveCountries();
+
+        if (array_key_exists($countryCode, $countries)) {
+            $storeCode = $countries[$countryCode]['code'];
+            Mage::getSingleton('core/session')->setCountryCode($countryCode);
+            Mage::getSingleton('core/session')->setStoreCode($storeCode);
+            setcookie("wstore", $storeCode, time() + 60*60*24*30, "/");
+        }
+
+        $this->getResponse()->setHeader('Content-type', 'image/png', true);
+        $this->getResponse()->setBody(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII='));
+    }
 }
