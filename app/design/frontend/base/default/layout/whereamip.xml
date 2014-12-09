@@ -2,16 +2,36 @@
     <default>
         <reference name="head">
             <block type="core/template" name="redirectUrl" template="whereamip/redirect.phtml" />
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
         <reference name="footer_links">
             <action method="addLink" translate="label title" module="whereamip"><label>Change Country</label><url helper="whereamip/getUrl" /><title>Change Country</title></action>
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
         <reference name="header">
             <block type="whereamip/link" name="whereamip_link" as="whereamip_link" template="whereamip/link.phtml" />
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
 
         <reference name="right">
             <block type="whereamip/link" name="whereamip_link" as="whereamip_link" template="whereamip/link.phtml" />
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
 
     </default>
@@ -19,13 +39,28 @@
         <label>Choose Your Shipping Destination</label>
         <reference name="head">
             <action method="setTitle" translate="title" module="whereamip"><title>Choose Your Shipping Destination</title></action>
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
         <reference name="root">
             <action method="setTemplate"><template>page/1column.phtml</template></action>
             <action method="setHeaderTitle" translate="title" module="whereamip"><title>Choose Your Shipping Destination</title></action>
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
         <reference name="content">
             <block type="whereamip/switch" name="changeCountry" template="whereamip/change_country.phtml"/>
+            <action method="setEsiOptions">
+                <params>
+                    <access>private</access>
+                </params>
+            </action>
         </reference>
     </whereamip_index_index>
 </layout>
