@@ -85,10 +85,16 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
         $path       = basename($currentUrl);
 
         /**
+         * Setup variables without http and https
+         */
+        $currentUrlClean = str_replace(array('https','http'),array('',''),$currentUrl);
+        $storeUrlClean = str_replace(array('https','http'),array('',''),$storeUrl);
+
+        /**
          * Compare the request URL with the store URL to see if the request belongs to
          * the current store scope
          */
-        if (substr($currentUrl, 0, strlen($storeUrl)) !== $storeUrl) {
+        if (substr($currentUrlClean, 0, strlen($storeUrlClean)) !== $storeUrlClean) {
 
             $storeUrl = $this->stripSlash($storeUrl);
 
