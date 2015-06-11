@@ -22,18 +22,21 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
             Mage::getSingleton('core/session')->setStoreCode($storeCode);
             setcookie("store", $storeCode, time() + 60*60*24*30, "/");
 
+            $store = Mage::app()->getStore($storeCode);
+
             if ($this->getRequest()->getPost('ref')) {
-                $store = Mage::app()->getStore($storeCode);
 
                 if ($store) {
                     $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
                 } else {
                     $url = $this->getRequest()->getPost('ref');
                 }
-
-                header("Location: " . $url);
-                exit;
+            } else {
+                $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
             }
+
+            header("Location: " . $url);
+            exit;
         } else {
             Mage::getSingleton('core/session')->setError(
                 sprintf($this->__('Country not found: %s.'), $countryCode)
