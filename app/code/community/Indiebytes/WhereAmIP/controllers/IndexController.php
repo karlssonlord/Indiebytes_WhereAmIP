@@ -60,14 +60,18 @@ class Indiebytes_WhereAmIP_IndexController extends Mage_Core_Controller_Front_Ac
                     $url = $this->getRequest()->getPost('ref');
                 }
             } else {
-                $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+                if ($_POST) {
+                    $url = $store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK);
+                }
             }
 
             /**
              * Redirect PHP way
              */
-            header("Location: " . $url);
-            exit;
+            if (isset($url) && $url) {
+                header("Location: " . $url);
+                exit;
+            }
         } else {
             Mage::getSingleton('core/session')->setError(
                 sprintf($this->__('Country not found: %s.'), $countryCode)
