@@ -50,14 +50,14 @@
                 </whereamip>
             </updates>
         </layout>
-        <translate>
-            <modules>
-                <whereamip>
-                    <files>
-                        <default>Indiebytes_WhereAmIP.csv</default>
-                    </files>
-                </whereamip>
-            </modules>
-        </translate>
+        <translate>
+            <modules>
+                <whereamip>
+                    <files>
+                        <default>Indiebytes_WhereAmIP.csv</default>
+                    </files>
+                </whereamip>
+            </modules>
+        </translate>
     </frontend>
 </config>

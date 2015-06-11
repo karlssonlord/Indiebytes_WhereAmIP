@@ -43,6 +43,9 @@
  */
 class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * @var
+     */
     private $_selectableCountries;
 
     /**
