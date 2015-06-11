@@ -69,7 +69,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
          * for the visitor
          */
         if (is_null($storeCode)) {
-            return $return;
+            return null;
         }
 
         /**
