@@ -83,7 +83,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
 
         $store      = Mage::getModel('core/store')->load($storeCode);
         $storeId    = $store->getId();
-        $storeUrl   = $this->appendSlash($store->getBaseUrl());
+        $storeUrl   = $this->appendSlash($store->getBaseUrl('link', Mage::app()->getStore()->isCurrentlySecure()));
         $currentUrl = $this->appendSlash(Mage::helper('core/url')->getCurrentUrl());
         $path       = basename($currentUrl);
 
@@ -106,7 +106,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
              */
             foreach (Mage::app()->getStores() as $_eachStoreId => $val) {
                 $_storeCode = Mage::app()->getStore($_eachStoreId)->getCode();
-                $_storeUrl  = Mage::getModel('core/store')->load($storeCode)->getBaseUrl();
+                $_storeUrl  = Mage::getModel('core/store')->load($storeCode)->getBaseUrl('link', Mage::app()->getStore()->isCurrentlySecure());
                 $_path      = $this->stripSlash(
                     substr(
                         $currentUrl,
