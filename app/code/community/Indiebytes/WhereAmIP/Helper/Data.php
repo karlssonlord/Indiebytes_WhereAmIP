@@ -177,6 +177,8 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
             return $this->_selectableCountries;
         }
 
+        $locale = new Zend_Locale('en_US');
+        $countries = $locale->getTranslationList('Territory', $locale->getLanguage(), 2);
         $return = array();
         $returnSort = array();
         $countryModel = Mage::getModel('directory/country');
@@ -196,7 +198,7 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
                         if ( !isset($return[$country]) ) {
                             $return[$country] = array(
                                 'store_id' => $store->getId(),
-                                'country' => $countryModel->loadByCode($country)->getName(),
+                                'country' => $countries[$country],
                                 'code' => $store->getCode(),
                                 'currency' => $store->getCurrentCurrencyCode(),
                                 'origin' => $countryModel->loadByCode($store->getConfig('shipping/origin/country_id'))->getName()
@@ -221,7 +223,24 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-        $this->_selectableCountries = $result;
+        /**
+         * Calculate sort
+         */
+        $sortOrder = array();
+        foreach ($result as $resultKey => $resultValue) {
+            $sortOrder[$resultKey] = mb_strtolower($resultValue['country']);
+        }
+        asort($sortOrder);
+
+        /**
+         * Add each element according to the new sort order
+         */
+        $selectableCountries = array();
+        foreach ($sortOrder as $sortOrderKey => $sortOrderValue) {
+            $selectableCountries[$sortOrderKey] = $result[$sortOrderKey];
+        }
+
+        $this->_selectableCountries = $selectableCountries;
 
         return $result;
     }
