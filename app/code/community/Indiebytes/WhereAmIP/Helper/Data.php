@@ -246,6 +246,63 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Get active countries
+     *
+     * @param int $websiteId Website ID
+     *
+     * @return array
+     */
+    public function getActiveCountriesByWebsite($websiteId = null)
+    {
+        $locale = new Zend_Locale('en_US');
+        $countries = $locale->getTranslationList('Territory', $locale->getLanguage(), 2);
+
+        $return = array();
+        $returnSort = array();
+        $countryModel = Mage::getModel('directory/country');
+        $website = Mage::app()->getWebsite();
+
+        // Get all groups
+        foreach ($website->getGroups() as $group) {
+            // Get all stores
+            foreach ($group->getStores() as $store) {
+                // Get allowed countries list
+                $countryList = Mage::getStoreConfig('general/country/allow', $store->getId());
+                // Explode the values into an array
+                $countryList = explode(',', $countryList);
+                // Add them to our array
+                foreach ( $countryList as $country ) {
+                    if ( !isset($return[$country]) ) {
+                        $return[$country] = array(
+                            'store_id' => $store->getId(),
+                            'country' => $countryModel->loadByCode($country)->getName(),
+                            'code' => $store->getCode(),
+                            'currency' => $store->getCurrentCurrencyCode(),
+                            'origin' => $countryModel->loadByCode($store->getConfig('shipping/origin/country_id'))->getName()
+                        );
+                        // Add to the sort array
+                        $returnSort[$return[$country]['country']][] = $country;
+                    }
+                }
+            }
+        }
+
+        ksort($returnSort);
+
+        // Set up the final result array
+        $result = array();
+
+        // Loop through the sorted array
+        foreach ( $returnSort as $countryCodeMaster => $countries ) {
+            foreach ( $countries as $countryCode ) {
+                $result[$countryCode] = $return[$countryCode];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Get URL
      *
      * @return string
@@ -286,9 +343,14 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return string
      */
-    public function getCurrentCountryCodeWithFallback()
+    public function getCurrentCountryCodeWithFallback($website = false)
     {
-        $activeCountries = $this->getActiveCountries();
+        if ($website) {
+            $activeCountries = $this->getActiveCountriesByWebsite();
+        } else {
+            $activeCountries = $this->getActiveCountries();
+        }
+
         $countryCode = Mage::getSingleton('core/session')->getCountryCode();
         if (!isset($activeCountries[$countryCode])) {
             $countryCode = Mage::getStoreConfig('general/country/default');
@@ -302,9 +364,9 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return string
      */
-    public function getCurrentCountryNameWithFallback()
+    public function getCurrentCountryNameWithFallback($website = false)
     {
-        $countryCode = $this->getCurrentCountryCodeWithFallback();
+        $countryCode = $this->getCurrentCountryCodeWithFallback($website);
 
         return Mage::getModel('core/locale')->getCountryTranslation($countryCode);
     }
