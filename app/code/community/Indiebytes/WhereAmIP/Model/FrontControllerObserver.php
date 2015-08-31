@@ -33,6 +33,10 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
          **/
         $customerIp = isset($_GET['ip']) ? $_GET['ip'] : Mage::helper('core/http')->getRemoteAddr(false);
 
+        $websiteCountries = Mage::helper('whereamip')->getActiveCountriesByWebsite();
+
+        $storeCode = Mage::getSingleton('core/session')->getStoreCode();
+
         /**
          * Set store code and country code to session
          *
@@ -40,7 +44,7 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
          * have received an IP address, then we should try to set the store
          * code based on active countries.
          **/
-        if (!Mage::getSingleton('core/session')->getStoreCode() && $customerIp !== null) {
+        if ((!$storeCode || !array_key_exists(strtoupper($storeCode), $websiteCountries)) && $customerIp !== null) {
             /**
              * Get active countries
              **/
@@ -71,7 +75,7 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
                 $geoIp->getData('countryCode') : Mage::getStoreConfig('general/country/default');
             Mage::getSingleton('core/session')->setCountryCode($geoCountryCode);
 
-            if (array_key_exists($geoCountryCode, $countries)) {
+            if (array_key_exists($geoCountryCode, $websiteCountries)) {
                 $storeCode = $countries[$geoCountryCode]['code'];
                 Mage::getSingleton('core/session')->setStoreCode($storeCode);
                 setcookie("store", $storeCode, time() + 60*60*24*30, "/");
