@@ -35,6 +35,10 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
         $websiteCountries = Mage::helper('whereamip')->getActiveCountriesByWebsite();
         $storeCode = Mage::getSingleton('core/session')->getStoreCode();
 
+        $websiteCountries = Mage::helper('whereamip')->getActiveCountriesByWebsite();
+
+        $storeCode = Mage::getSingleton('core/session')->getStoreCode();
+
         /**
          * Set store code and country code to session
          *
