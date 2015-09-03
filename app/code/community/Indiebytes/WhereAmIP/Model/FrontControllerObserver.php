@@ -42,7 +42,7 @@ class Indiebytes_WhereAmIP_Model_FrontControllerObserver
          * have received an IP address, then we should try to set the store
          * code based on active countries.
          **/
-        if ((!$storeCode || !array_key_exists(strtoupper($storeCode), $websiteCountries)) && $customerIp !== null) {
+        if (!$storeCode && $customerIp !== null) {
             /**
              * Get active countries
              **/
