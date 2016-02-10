@@ -69,7 +69,17 @@ class Indiebytes_WhereAmIP_Helper_Data extends Mage_Core_Helper_Abstract
          * for the visitor
          */
         if (is_null($storeCode)) {
-            return null;
+            $countryCode = Mage::getSingleton('core/session')->getCountryCode();
+            if (!is_null($countryCode)) {
+                $countries = $this->getActiveCountries();
+                if (array_key_exists($countryCode, $countries)) {
+                    $storeCode = $countries[$countryCode]['code'];
+                } else {
+                    return null;
+                }
+            } else {
+               return null;
+            }
         }
 
         /**
